@@ -1,3 +1,5 @@
+import { Loader } from "../views/components";
+
 const COLORS = {
     White: '#FFFFFF',
     ButtonTxtColor: '#1E1E1E',
@@ -10,6 +12,7 @@ const COLORS = {
     tabActiveColor: '#D9D9D9',
     textBoxStrokeColor: '#5B5B5C',
     checkBGColor: '#4F4E51',
+    noDataBG: '#F4F4F4',
     tabBGColor: '#2C2B2F',
     backBtnBG: '#484848',
     transBGColor: '#EBEBEB',

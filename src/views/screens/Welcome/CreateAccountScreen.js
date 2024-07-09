@@ -1,19 +1,122 @@
-import React, {useState} from 'react';
-import { StyleSheet, Text, View, Image, ImageBackground, TouchableOpacity, StatusBar, Platform} from 'react-native';
-import { COLORS, FONTS, icons, images } from '../../../constants';
+import React, {useState, useContext} from 'react';
+import { StyleSheet, 
+         Text, View, Image, 
+         ImageBackground, 
+         TouchableOpacity, 
+         StatusBar, ToastAndroid,
+         Platform,
+         Alert} from 'react-native';
+import axios from 'axios';
+import { COLORS, FONTS, icons, images, APIBaseUrl, AppName } from '../../../constants';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Button } from '../../components';
+import { Button, Loader } from '../../components';
+import { AuthContext } from '../../../context/AuthContext';
+import Clipboard from '@react-native-community/clipboard';
+import Toast from 'react-native-toast-message';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import { useFocusEffect } from '@react-navigation/native';
 
 
 const CreateAccountScreen = ({navigation}) => {
 
-    const [authID, setAuthID] = useState('301-3312-1000UL')
+    const {ValidateAuthID} = useContext(AuthContext);
+
+    const [authID, setAuthID] = useState('')
+    const [loading, setIsLoading] = useState(null);
+    const [copiedText, setCopiedText] = useState('');
+
+    console.log(copiedText);
+    
+    //validate account number
+    const createNewAuthID = () => {
+      
+        Alert.alert(AppName.AppName, 'Do you want to create account?', [
+              {
+                text: 'No',
+                onPress: () => console.log('Cancel Pressed'),
+                style: 'cancel',
+              },
+              {text: 'Yes', onPress: () => CreateNewAuthID(authID)},
+        ]);
+        
+    }// end function
+
+    const CreateNewAuthID = (authID) => {
+        
+        //data
+         const data = {
+             entryID : authID,
+             entryPass : "123457"
+         }
+ 
+         setIsLoading(true);
+ 
+         axios.post(APIBaseUrl.developmentUrl + 'entry/createAccount',data,{
+             headers: {
+             'Content-Type' : 'application/json',
+             'Access-Control-Allow-Origin': 'http://localhost:3331'
+             }
+         })
+         .then(response => {
+ 
+             setIsLoading(false)
+ 
+             console.log(response.data)
+             ValidateAuthID(response.data, authID)
+             
+         })
+         .catch(error => {
+             console.log(error + "1");
+         });
+     }
+
+    // function to fetch authentication id
+  const getAuthenticationID = () => {
+
+      axios.get(APIBaseUrl.developmentUrl + 'entry/fetchAuthID',{},{
+        headers: {
+          'Content-Type' : 'application/json',
+          'Access-Control-Allow-Origin': 'http://localhost:3331'
+        }
+      })
+      .then(response => {
+
+        console.log(response.data)
+        setAuthID(response.data)
+
+      })
+      .catch(error => {
+        console.log(error + "1");
+      });
+
+  }// end of function 
+
+    const  copyToClipboard = async () => {
+
+      Clipboard.setString(authID);
+
+      const text = await Clipboard.getString();
+      setCopiedText(text);
+
+      Toast.show({
+        type: 'success',
+        text1: 'Authentication ID Copied!',
+      });
+    };
+
+  useFocusEffect(
+    React.useCallback(() => {
+        getAuthenticationID();
+    }, [])
+  );
+
   return (
     <SafeAreaView style={{
         flexGrow: 1,
         backgroundColor: COLORS.bgColor
     }}>
+       <Loader loading={loading} />
+
         <StatusBar barStyle="light-content" />
         <View style={styles.logo}>
             <Image source={images.appLogo} 
@@ -40,10 +143,9 @@ const CreateAccountScreen = ({navigation}) => {
             </View>
             <Text style={styles.textid}>Authentication ID has created for your account</Text>
 
-
             <View style={styles.textBox}>
                     <Text style={styles.txtAuthID}>{authID}</Text>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => copyToClipboard()}>
                         <Image source={icons.copyText} 
                             style={{
                                 height: wp(6), width: wp(6), 
@@ -55,7 +157,11 @@ const CreateAccountScreen = ({navigation}) => {
             <Text style={styles.notice}>Copy and keep your authenticate ID safe</Text>
 
 <View style={styles.btnBox}>
-    <Button title="Create Account" />
+    <Button 
+        onPress={() => createNewAuthID()}
+        disabled={loading} 
+        title="Create Account" 
+    />
 </View>
         </View>
 
@@ -105,7 +211,7 @@ const styles = StyleSheet.create({
     },
     txtAuthID: {
         fontFamily: FONTS.POPPINS_MEDIUM,
-        fontSize: Platform.OS === 'android' ? wp(7) : wp(7.2),
+        fontSize: Platform.OS === 'android' ? wp(7) : wp(5.8),
         color: COLORS.White,
         flex: 1
     },

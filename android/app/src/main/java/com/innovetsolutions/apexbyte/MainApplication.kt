@@ -1,4 +1,4 @@
-package com.apexbyteapp
+package com.innovetsolutions.apexbyte
 
 import android.app.Application
 import com.facebook.react.PackageList

@@ -10,7 +10,7 @@ const Button = ({title, onPress, disabled}) => {
   return (
     <TouchableOpacity 
         onPress={onPress}
-        style={[styles.btnStarted, {backgroundColor : disabled ? COLORS.primaryColor : COLORS.primaryColor}]}
+        style={[styles.btnStarted, {backgroundColor : disabled ? COLORS.checkBGColor : COLORS.primaryColor}]}
         disabled={disabled}>
       <Text style={styles.txtBtn}>{title}</Text>
     </TouchableOpacity>
@@ -29,6 +29,6 @@ const styles = StyleSheet.create({
     btnStarted: {
         backgroundColor: COLORS.primaryColor,
         borderRadius: wp(4),
-        paddingVertical: Platform.OS === 'android' ? wp(4) : wp(5)
+        paddingVertical: Platform.OS === 'android' ? wp(4) : wp(4.3)
     },
 })

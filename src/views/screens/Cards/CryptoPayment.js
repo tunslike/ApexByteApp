@@ -31,7 +31,9 @@ const data = [
 
   ]
 
-const CryptoPayment = ({navigation}) => {
+const CryptoPayment = ({navigation, route}) => {
+  const {totalAmount, cardName, quantity, image} = route.params;
+
   return (
     <ScrollView
     style={{
@@ -41,14 +43,30 @@ const CryptoPayment = ({navigation}) => {
     >
     <InnerHeader onPress={() => navigation.goBack()} title="Choose Crypto Payment" />
 
+    <View style={styles.carBoxName}>
+        <Text style={styles.cardTitle}>Your Order</Text>
+        <View style={styles.innerBox}>
+        <Image source={image} 
+          style={{
+            height: wp(12), width: wp(20), resizeMode: 'contain'
+          }}
+        />
+            <View style={{flex: 1}}>
+                <Text style={styles.txtGiftName}>{cardName}</Text>
+                <Text style={styles.txtQuantity}>Quantity: {quantity}</Text>
+            </View>
+            <Text style={styles.txtAmount}>${totalAmount}</Text>
+        </View>
+    </View>
+
     <View style={styles.listBox}>
         <Text style={styles.titleHdr}>Select your preferred crypto payment?</Text>
 
-        <CryptoCard onPress={() => navigation.navigate("MakePayment")} title="BTC" image={icons.btc_icon} />
-        <CryptoCard onPress={() => navigation.navigate("MakePayment")} title="ETH" image={icons.eth_icon} />
-        <CryptoCard onPress={() => navigation.navigate("MakePayment")} title="USDT" image={icons.usdt_icon} />
-        <CryptoCard onPress={() => navigation.navigate("MakePayment")} title="XMR" image={icons.xmr_icon} />
-        <CryptoCard onPress={() => navigation.navigate("MakePayment")} title="LTC" image={icons.ltc_icon} />
+        <CryptoCard onPress={() => navigation.navigate("MakePayment", {cardName:cardName, quantity: quantity, currency: "BTC", currencyImg: icons.btc_icon, amount: totalAmount})} title="BTC" image={icons.btc_icon} />
+        <CryptoCard onPress={() => navigation.navigate("MakePayment", {cardName:cardName, quantity: quantity, currency: "ETH", currencyImg: icons.eth_icon, amount: totalAmount})} title="ETH" image={icons.eth_icon} />
+        <CryptoCard onPress={() => navigation.navigate("MakePayment", {cardName:cardName, quantity: quantity, currency: "USDT", currencyImg: icons.usdt_icon, amount: totalAmount})} title="USDT" image={icons.usdt_icon} />
+        <CryptoCard onPress={() => navigation.navigate("MakePayment", {cardName:cardName, quantity: quantity, currency: "XMR", currencyImg: icons.xmr_icon, amount: totalAmount})} title="XMR" image={icons.xmr_icon} />
+        <CryptoCard onPress={() => navigation.navigate("MakePayment", {cardName:cardName, quantity: quantity, currency: "LTC", currencyImg: icons.ltc_icon, amount: totalAmount})} title="LTC" image={icons.ltc_icon} />
 
     </View>
     
@@ -59,15 +77,51 @@ const CryptoPayment = ({navigation}) => {
 
 
 const styles = StyleSheet.create({
+  txtGiftName: {
+    fontFamily: FONTS.POPPINS_SEMIBOLD,
+    fontSize: wp(3.9),
+    color: COLORS.White
+  },
+  txtQuantity: {
+    fontFamily: FONTS.POPPINS_REGULAR,
+    fontSize: wp(3.3),
+    color: COLORS.textGray
+  },
+  txtAmount: {
+    fontFamily: FONTS.POPPINS_SEMIBOLD,
+    fontSize: wp(5),
+    color: COLORS.primaryColor
+  },
+  innerBox: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    columnGap: wp(3),
+    alignItems: 'center',
+    marginTop: wp(3),
+    paddingRight: wp(4)
+  },
+  cardTitle: {
+    fontFamily: FONTS.POPPINS_REGULAR,
+    fontSize: wp(3),
+    color: COLORS.primaryColor
+  }
+,  carBoxName: {
+    backgroundColor: COLORS.tabBGColor,
+    marginHorizontal: wp(3),
+    borderRadius: wp(5),
+    paddingVertical: wp(3),
+    marginTop: wp(4),
+    paddingLeft: wp(4)
+  },
     titleHdr: {
-        fontFamily: FONTS.POPPINS_REGULAR,
+        fontFamily: FONTS.POPPINS_MEDIUM,
         fontSize: wp(3.5),
         color: COLORS.textGray,
-        marginBottom: wp(6)
+        marginBottom: wp(3.5)
     },
     listBox: {
         marginHorizontal: wp(5),
-        marginTop: wp(8)
+        marginTop: wp(10)
     }
 })
 

@@ -8,24 +8,65 @@ import {
     StyleSheet, 
     Text, 
     View } from 'react-native';
-import { COLORS, FONTS, images } from '../../../constants';
+import axios from 'axios';
+import { COLORS, FONTS, images, ReloadlyKeys } from '../../../constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import { useDispatch } from "react-redux";
+import Toast from 'react-native-toast-message';
+import { updateAuthID, updateReloadlyAccessToken } from '../../../store/accountSlice';
+import { useSelector } from 'react-redux';
 
 const WelcomeScreen = ({navigation}) => {
 
-    const [userLogged, setuserLogged] = useState('');
+    const access_token = useSelector((state) => state.account.reloadlyAccessToken);
 
+    const [userLogged, setuserLogged] = useState('');
+    const dispatch = useDispatch();
+
+    // function to fetch authentication id
+       const getAuthCode = () => {
+
+        const data = {
+            client_id: ReloadlyKeys.client_id,
+            client_secret : ReloadlyKeys.client_secret,
+            grant_type: "client_credentials",
+            audience : "https://giftcards-sandbox.reloadly.com"
+        }
+
+        axios.post('https://auth.reloadly.com/oauth/token',data,{
+          headers: {
+                'Content-Type' : 'application/json',
+                'Access-Control-Allow-Origin': 'http://localhost:3331'
+          }
+        })
+        .then(response => {
+
+  
+          console.log(response.data.access_token);
+          dispatch(updateReloadlyAccessToken(response.data.access_token));
+  
+        })
+        .catch(error => {
+          console.log(error + "1");
+        });
+  
+    }// end of function
 
   //-FUNCTION TO CHECK LOGGED USER
   const ValidatedAuthenticatedUser = async () => {
     try {
         
         let userData = await AsyncStorage.getItem('userLogged');
+        let authID = await AsyncStorage.getItem('authID');
 
-        if(userData) {
-          console.log('user has logged in before')
-          setuserLogged(userData);
+        if(userData || authID) {
+        
+            dispatch(updateAuthID(authID));
+
+            console.log('user has logged in before')
+            setuserLogged(userData);
+            
         }else{
           console.log('New User found')
         }
@@ -40,6 +81,20 @@ const WelcomeScreen = ({navigation}) => {
  //USE EFFECT
  useEffect(() => {
 
+    if(access_token == '') {
+
+        Toast.show({
+            type: 'info',
+            text1: 'Loading, Please wait...',
+          });
+    
+        getAuthCode(); 
+    }else{
+        Toast.show({
+            type: 'success',
+            text1: 'Configuration loaded',
+          });
+    }
     ValidatedAuthenticatedUser();
 
 }, []);

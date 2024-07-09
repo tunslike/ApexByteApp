@@ -18,9 +18,11 @@ import { COLORS, images, FONTS, icons, APIBaseUrl } from '../../../constants';
 import { GiftCardList, InnerHeader, ProfileCard, VirtualCardList } from '../../components';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSelector } from 'react-redux';
 
 const ProfileScreen = ({navigation}) => {
 
+  const authID = useSelector((state) => state.account.auth_id);
   const {ExitAuthenticatedUser} = useContext(AuthContext);
 
   return (
@@ -43,7 +45,7 @@ const ProfileScreen = ({navigation}) => {
   <Text style={styles.txtUser}>Auth-User-0390</Text>
   <View style={styles.idbox}>
         <Text style={styles.txtAuth}>ID</Text>
-        <Text style={[styles.txtAuth, {color: COLORS.greenText}]}>8290-020-20-L</Text>
+        <Text style={[styles.txtAuth, {color: COLORS.greenText}]}>{authID}</Text>
         <Image source={icons.copyText} 
           style={{
             height: wp(4), width: wp(4), marginLeft: wp(3), tintColor: COLORS.textGray, resizeMode: 'contain'
@@ -94,16 +96,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     columnGap: wp(3),
-    marginTop: wp(4)
+    marginTop: wp(3)
   },
   settingBox: {
       backgroundColor: COLORS.tabBGColor,
-      paddingVertical: wp(10),
+      paddingTop: wp(10),
       paddingHorizontal: wp(7),
       borderTopLeftRadius: wp(10),
       borderTopRightRadius: wp(10),
       height: '100%',
-      marginTop: wp(10)
+      marginTop: wp(15)
 
   },
   txtAuth: {

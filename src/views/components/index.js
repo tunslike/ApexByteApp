@@ -10,8 +10,14 @@ import GiftCardList from "./GiftCardList";
 import PaymentCard from "./PaymentCard";
 import CryptoCard from "./CryptoCard";
 import ProfileCard from "./ProfileCard";
+import Loader from "./Loader";
+import GiftCard from "./GiftCard";
+import InputTextbox from "./InputTextbox";
 
 export {
+    InputTextbox,
+    GiftCard,
+    Loader,
     ProfileCard,
     CryptoCard,
     PaymentCard,

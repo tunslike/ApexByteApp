@@ -20,6 +20,8 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 const DashboardScreen = ({navigation}) => {
   
   const [greetings, setGreetings] = useState('');
+  const [buyHistory, setBuyHistory] = useState(null);
+  const [transaction, setTransaction] = useState('');
 
   const data = [
     {id: 1, name: 'Virtual Card', cardType: 'Google Pay', amount: 100},
@@ -103,7 +105,7 @@ const DashboardScreen = ({navigation}) => {
             desc="Buy virtual card for online payment"
         />
         <PurchaseCard 
-          onPress={() => navigation.navigate("BuyGiftCard")}
+          onPress={() => navigation.navigate("GiftCardCategory")}
           image={images.ebay}
           title="Buy Gift Card"
           desc="Buy gift cards with ease"
@@ -114,18 +116,22 @@ const DashboardScreen = ({navigation}) => {
     
     {/* Buy Again */}
 
-    <View style={styles.buyWindow}>
+    {
+      (buyHistory) &&
 
-            <Text style={styles.subHdr}>Buy Again?</Text>
+      <View style={styles.buyWindow}>
+      <Text style={styles.subHdr}>Buy Again?</Text>
 
-            <FlatList
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              data={data}
-              renderItem={renderItem}
-              keyExtractor={(item) => item.id}
-            />
+      <FlatList
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        data={data}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+      />
     </View>
+
+    }
 
     {/* Buy Again Ends here */}
 
@@ -135,7 +141,11 @@ const DashboardScreen = ({navigation}) => {
       <View style={styles.transBox}>
             <Text style={styles.transHdr}>Recent Transactions</Text>
 
-            <View style={styles.transwind}> 
+
+            {
+              (transaction != '') &&
+
+                <View style={styles.transwind}> 
                 <TransCard 
                   narration="Credit Card Purchase"
                   date="01-May-2024"
@@ -149,7 +159,21 @@ const DashboardScreen = ({navigation}) => {
                 status="Successful"
               />
             </View>
-            
+            }
+
+          {(transaction == '') &&
+
+            <View style={styles.noTrans}>
+                <Image source={images.nodata} 
+                  style={{
+                    width: wp(25), height: wp(25), resizeMode: 'contain'
+                  }}
+                />
+                <Text style={styles.noTransTxt}>No transactions found!</Text>
+                <Text style={styles.noTransTxt}>Your recent transactions will show here</Text>
+            </View>
+          }
+      
       </View>
 
 
@@ -161,6 +185,19 @@ const DashboardScreen = ({navigation}) => {
 }
 
 const styles = StyleSheet.create({
+  noTransTxt: {
+    fontFamily: FONTS.POPPINS_REGULAR,
+    fontSize: wp(3),
+    color: COLORS.textBoxStrokeColor
+  },
+  noTrans: {
+      marginTop: wp(7),
+      borderRadius: wp(5),
+      paddingVertical: wp(5),
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: COLORS.White,
+  },
   transwind: {
     marginTop: wp(1),
     paddingBottom: wp(20)

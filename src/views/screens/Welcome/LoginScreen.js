@@ -5,32 +5,59 @@ import { StyleSheet, Text, View, Image, Alert,
         TextInput,
         ImageBackground,
         Platform} from 'react-native';
-import { COLORS, FONTS, icons, images } from '../../../constants';
+import axios from 'axios';
+import { COLORS, FONTS, icons, images, APIBaseUrl, AppName } from '../../../constants';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Button, LoginTextbox } from '../../components';
+import { Button, LoginTextbox, Loader } from '../../components';
 import { AuthContext } from '../../../context/AuthContext';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { Formik } from 'formik';
 import * as Yup from 'yup'
+import { useSelector } from 'react-redux';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const LoginValidation = Yup.object().shape({
 
     authorizationID: Yup.string()
-      .min(15, 'Invalid Authorization code')
-      .max(15, 'Invalid Authorization code')
+      .min(14, 'Invalid Authorization code')
+      .max(14, 'Invalid Authorization code')
       .required('Authorization code is required')
 })
 
 const LoginScreen = ({navigation}) => {
 
-    const {ValidateCustomerLogin, isLoading} = useContext(AuthContext);
-    const [authID, setAuthID] = useState('301-3312-1000UL')
+    const store_authID = useSelector((state) => state.account.auth_id);
+    const {ValidateAuthID} = useContext(AuthContext);
+    const [loading, setIsLoading] = useState(null);
 
     const AuthenticateUser = (values) => {
-        Alert.alert('Authorization validated!')
-        ValidateCustomerLogin(values.authorizationID)
+
+        //data
+        const data = {
+            authID : values.authorizationID,
+        }
+
+        setIsLoading(true);
+
+        axios.post(APIBaseUrl.developmentUrl + 'entry/validateAuthoriseUser',data,{
+            headers: {
+            'Content-Type' : 'application/json',
+            'Access-Control-Allow-Origin': 'http://localhost:3331'
+            }
+        })
+        .then(response => {
+
+            setIsLoading(false)
+
+            console.log(response.data)
+            ValidateAuthID(response.data.ENTRY_ID, response.data.AUTH_ID);
+            
+        })
+        .catch(error => {
+            console.log(error + "1");
+        });
     }
 
   return (
@@ -45,9 +72,11 @@ const LoginScreen = ({navigation}) => {
     >
     <SafeAreaView>
 
+    <Loader loading={loading} />
+
     <Formik
         initialValues={{
-            authorizationID: '',
+            authorizationID: (store_authID) ? store_authID : '',
         }}
         validationSchema={LoginValidation}
         onSubmit={values => AuthenticateUser(values)}
@@ -104,6 +133,11 @@ const LoginScreen = ({navigation}) => {
             {
                 errors.authorizationID &&
                 <Text style={styles.notice}>{errors.authorizationID}</Text>
+            }
+
+            {
+                (store_authID) &&
+                <Text style={styles.notice}>Valid Authenticate ID found!</Text>
             }
         <View style={styles.btnBox}>
             <Button

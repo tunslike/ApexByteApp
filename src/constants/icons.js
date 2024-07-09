@@ -21,8 +21,14 @@ const profile_icon = require("../assets/icons/profile_icon.png")
 const small_arrow_right = require("../assets/icons/small_arrow_right.png")
 const check_icon = require("../assets/icons/check_icon.png")
 const logout_icon = require("../assets/icons/logout_icon.png")
+const search = require("../assets/icons/search.png")
+const quan_arrow_left = require("../assets/icons/quan_arrow_left.png")
+const quan_arrow_right = require("../assets/icons/quan_arrow_right.png")
 
 export default {
+    quan_arrow_left,
+    quan_arrow_right,
+    search,
     logout_icon,
     check_icon,
     small_arrow_right,
