@@ -58,22 +58,33 @@ const PurchaseVirtualCardScreen = ({navigation}) => {
     <View style={styles.listBox}>
         <Text style={styles.titleHdr}>Select what you want to pay for?</Text>
 
+        {/* 
         <VirtualCardList 
-          onPress={() => handleOpenBottomSheet('GooglePlay')} 
+        onPress={() => handleOpenBottomSheet('GooglePlay')} 
+        icon={images.google_icon} 
+        title="GooglePlay" />
+        */}
+
+        <VirtualCardList 
+          onPress={() => navigation.navigate("BuyVirtualCard")} 
           icon={images.google_icon} 
           title="GooglePlay" />
         <VirtualCardList 
-          onPress={() => handleOpenBottomSheet('Apple Subscription')} 
+          onPress={() => navigation.navigate("BuyVirtualCard")} 
           icon={images.apple_icon} 
           title="Apple Subscription" />
         <VirtualCardList 
-          onPress={() => handleOpenBottomSheet('Apple Subscription')} 
+          onPress={() => navigation.navigate("BuyVirtualCard")} 
           icon={images.apple_icon} 
           title="Apple Subscription" />
         <VirtualCardList 
-          onPress={() => handleOpenBottomSheet('AmazonPlay')} 
+          onPress={() => navigation.navigate("BuyVirtualCard")} 
           icon={images.amazon_icon} 
           title="AmazonPlay" />
+          <VirtualCardList 
+          onPress={() => navigation.navigate("BuyVirtualCard")} 
+          icon={icons.no_cash_payment} 
+          title="Other Payment..." />
     </View>
 
     </ScrollView>

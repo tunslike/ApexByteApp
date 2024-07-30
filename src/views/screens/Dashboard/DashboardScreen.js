@@ -14,14 +14,19 @@ import {
   Dimensions} from 'react-native';
 import axios from 'axios';
 import { COLORS, images, FONTS, icons, APIBaseUrl } from '../../../constants';
-import { PurchaseCard, RebuyCard, TransCard } from '../../components';
+import { Loader, PurchaseCard, RebuyCard, TransCard } from '../../components';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import { useFocusEffect } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
+import moment from 'moment';
 
 const DashboardScreen = ({navigation}) => {
   
+  const entry_id = useSelector((state) => state.account.entry_id);
   const [greetings, setGreetings] = useState('');
   const [buyHistory, setBuyHistory] = useState(null);
-  const [transaction, setTransaction] = useState('');
+  const [transaction, setTransaction] = useState([]);
+  const [loading, setIsLoading] = useState(false);
 
   const data = [
     {id: 1, name: 'Virtual Card', cardType: 'Google Pay', amount: 100},
@@ -47,11 +52,48 @@ const DashboardScreen = ({navigation}) => {
   }
 
 
+  const loadFetchTransactions = () => {
+
+  setIsLoading(true);
+
+  axios.get(APIBaseUrl.developmentUrl + 'product/fetchTransactions/' + entry_id ,{},{
+      headers: {
+      'Content-Type' : 'application/json',
+      'Access-Control-Allow-Origin': 'http://localhost:3331'
+      }
+  })
+  .then(response => {
+
+      setIsLoading(false)
+     
+      setTransaction(response.data);
+      console.log(response.data)
+      
+  })
+  .catch(error => {
+      setIsLoading(false)
+      console.log(error + "1");
+  });
+
+}
+   //truncate strings 
+   function TruncateString (message) {
+    if (message.length > 28) {
+        return ' ' + message.substring(0, 28) + "...";
+    }else{
+        return ' ' + message;
+    }
+}
+//end of truncate string
+
+
     //USE EFFECT
     useEffect(() => {
 
       //return greetings
       this.checkTimeGreetings();
+
+      loadFetchTransactions();
   
     }, []);
 
@@ -143,23 +185,25 @@ const DashboardScreen = ({navigation}) => {
 
 
             {
-              (transaction != '') &&
+                (transaction.length > 0) &&
 
                 <View style={styles.transwind}> 
-                <TransCard 
-                  narration="Credit Card Purchase"
-                  date="01-May-2024"
-                  amount="$45"
-                  status="Successful"
-                />
-                <TransCard 
-                narration="Giftcard Purchase"
-                date="02-Jan-2024"
-                amount="$15"
-                status="Successful"
-              />
+
+                {
+                  transaction.map((item) => {
+                    return(
+                      <TransCard key={item.TRANSACTION_ID}
+                      narration={TruncateString(item.NARRATION)}
+                      date={moment(item.DATE_CREATED).format("DD-MMM-YYYY")}
+                      amount={`${item.AMOUNT}`}
+                      status={item.PAYMENT_STATUS}
+                    />
+                    )
+                  })
+                }
             </View>
             }
+          
 
           {(transaction == '') &&
 
@@ -197,15 +241,19 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: COLORS.White,
+      marginBottom: wp(10)
   },
   transwind: {
     marginTop: wp(1),
-    paddingBottom: wp(20)
+    marginBottom: wp(5),
+    overflow: 'hidden',
+    height: hp(30)
   },
   transHdr: {
     color: COLORS.ButtonTxtColor,
     fontFamily: FONTS.POPPINS_SEMIBOLD,
-    fontSize: wp(3.5)
+    fontSize: wp(3.5),
+    marginBottom: wp(3)
   },
   transBox: {
       backgroundColor: COLORS.transBGColor,
@@ -214,7 +262,7 @@ const styles = StyleSheet.create({
       paddingHorizontal: wp(5.5),
       marginTop: wp(3),
       height: "100%",
-      paddingVertical: wp(3)
+      paddingTop: wp(3)
   },
   subHdr: {
     fontFamily: FONTS.POPPINS_SEMIBOLD,

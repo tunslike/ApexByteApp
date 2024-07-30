@@ -11,7 +11,6 @@ import { COLORS, FONTS, icons, images, APIBaseUrl, AppName } from '../../../cons
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button, Loader } from '../../components';
 import { AuthContext } from '../../../context/AuthContext';
-import Clipboard from '@react-native-community/clipboard';
 import Toast from 'react-native-toast-message';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import { useFocusEffect } from '@react-navigation/native';
@@ -50,7 +49,7 @@ const CreateAccountScreen = ({navigation}) => {
          }
  
          setIsLoading(true);
- 
+
          axios.post(APIBaseUrl.developmentUrl + 'entry/createAccount',data,{
              headers: {
              'Content-Type' : 'application/json',
@@ -72,6 +71,8 @@ const CreateAccountScreen = ({navigation}) => {
 
     // function to fetch authentication id
   const getAuthenticationID = () => {
+
+    console.log(APIBaseUrl.developmentUrl + 'entry/fetchAuthID')
 
       axios.get(APIBaseUrl.developmentUrl + 'entry/fetchAuthID',{},{
         headers: {
@@ -145,7 +146,7 @@ const CreateAccountScreen = ({navigation}) => {
 
             <View style={styles.textBox}>
                     <Text style={styles.txtAuthID}>{authID}</Text>
-                    <TouchableOpacity onPress={() => copyToClipboard()}>
+                    <TouchableOpacity onPress={() => null}>
                         <Image source={icons.copyText} 
                             style={{
                                 height: wp(6), width: wp(6), 
@@ -211,7 +212,7 @@ const styles = StyleSheet.create({
     },
     txtAuthID: {
         fontFamily: FONTS.POPPINS_MEDIUM,
-        fontSize: Platform.OS === 'android' ? wp(7) : wp(5.8),
+        fontSize: Platform.OS === 'android' ? wp(5.8) : wp(5.8),
         color: COLORS.White,
         flex: 1
     },
@@ -229,9 +230,9 @@ const styles = StyleSheet.create({
     },
     textid: {
         fontFamily: FONTS.POPPINS_LIGHT,
-        fontSize: wp(3.5),
+        fontSize: Platform.OS === 'android' ? wp(3.2) : wp(3.5),
         color: COLORS.textGray,
-        marginTop: wp(5)
+        marginTop: wp(8)
     },
     iconBar: {
         backgroundColor: COLORS.White,

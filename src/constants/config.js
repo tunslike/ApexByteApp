@@ -3,6 +3,8 @@ export const APIBaseUrl = {
     productionUrl: "http://localhost:3331/api/v1/",
 }
 
+//  developmentUrl: "https://services.apexbyte.tech/api/v1/",
+
 export const ReloadlyKeys = {
     client_id : "Z78pNAGBjcI4mguX4KaCaZOLOWvhvpCK",
     client_secret: "NpSgeRqgye-ThEXGsgfmuaSvI6W9dY-SNDgwAKvja9VrCL33ZhHIN60wqBtyiZ2",
@@ -12,8 +14,18 @@ export const ReloadlyKeys = {
 
 export const CryptomusKeys = {
     api_key : "QPlGB58fCeZCmhfs0NWkygYkm5jY3vafi1CDC4jcPfBR1ht05QZL8qcTfusqBwfQzfAlk7oBlrEoUHuV6WpdSCkRG4XEPOWM5UlghkHWh1YGIPN3WVOjDuhqRhWXPO5q",
+    merchant_id : '1887665b-937f-4027-ae25-1074a889c939',
+    payment_api_key : 'duZc29cCK73YtvkOVgcODedVfxcey9rnZbIn0EIqnZJNCKU9ySEqNlw2yQ8qcD6q1sOcJrWj4NUZfJGeRjhtcDA5FDKHCMPjTaqi1eTn16B9c89mc804lEadiRcuBet6',
+    payout_api_key : '',
+    base_url: 'https://api.cryptomus.com/v1/'
 }
 
+export const USDT_Account = {
+    USDT_TRC20_Wallet_Address : "TVhznry6y5ytdVKPDFdFfAEMYTe57AcYGY",
+    ticker : "trc20/usdt",
+    emailAddress: 'digitalsolutions@apexbyte.tec',
+    callback_url : "https://services.apexbyte.tech/api/v1/product/processPaymentCallback"
+}
 //https://lamsuite.finserveinvestment.com/services/api/v1/
 
 export const SendChampAPI = {

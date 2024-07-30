@@ -14,22 +14,22 @@ import {
   Dimensions} from 'react-native';
 import axios from 'axios';
 import { COLORS, images, FONTS, icons, APIBaseUrl, ReloadlyKeys } from '../../../constants';
-import { GiftCardList, InnerHeader, Loader, VirtualCardList } from '../../components';
+import { GiftCardList, InnerHeader, Loader } from '../../components';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { TextInput } from 'react-native-gesture-handler';
 import { useSelector } from 'react-redux';
 
-
-const GiftCardsByCountry = ({navigation}) => {
+const LoadCountryCardScreen = ({navigation, route}) => {
 
     const access_token = useSelector((state) => state.account.reloadlyAccessToken);
+    const {isoName} = route.params;
 
     const [countryList, setCountryList] = useState('');
     const [data, setData] = useState('');    
     const [loading, setIsLoading] = useState(false);
     const [countryCount, setCountryCount] = useState(0);
-    const [searchText, setSearchText] = useState('');
+    const [searchText, setSearchText] = useState(''| undefined);
 
         // function to test using fetch
         const getCountryFetch = async () => {
@@ -42,7 +42,7 @@ const GiftCardsByCountry = ({navigation}) => {
                     'Authorization': `Bearer ${access_token}`, 
                     'Accept' : 'application/com.reloadly.giftcards-v1+json'
                 };
-                await fetch('https://giftcards-sandbox.reloadly.com/countries/', { headers })
+                await fetch(`https://giftcards-sandbox.reloadly.com/countries/${isoName}/products`, { headers })
                 .then(response => response.json())
                 .then(data => {
     
@@ -79,7 +79,7 @@ const GiftCardsByCountry = ({navigation}) => {
             setData(countryList);
         }
         else {
-          let filteredLanguages = countryList.filter(countryList => (countryList.name.toLowerCase().startsWith(text)))
+          let filteredLanguages = countryList.filter(countryList => (countryList.productName.toLowerCase().startsWith(text)))
           setData(filteredLanguages);
         }
         
@@ -87,10 +87,15 @@ const GiftCardsByCountry = ({navigation}) => {
 
       const renderItem = ({item}) => (
         <GiftCardList  
-            image={item.flagUrl} 
-            title={item.name}
-            onPress={() => navigation.navigate("LoadCountryCard",{isoName: item.isoName})}
-        />
+        type={2}
+        image={item.logoUrls} 
+        title={item.productName} 
+        onPress={() => navigation.navigate("PayGiftCard", {cardName: item.productName, cardImage: item.logoUrls,
+                      currencyCode: item.recipientCurrencyCode, minRecepAmt: item.minRecipientDenomination,
+                      maxRecepAmt: item.maxRecipientDenomination, minSenderAmt: item.minSenderDenomination,
+                      maxSenderAmt: item.maxSenderDenomination, cardType: item.denominationType
+        })}
+    />
     );
   return (
     <View
@@ -114,22 +119,32 @@ const GiftCardsByCountry = ({navigation}) => {
                 <TextInput 
                 style={styles.searchBar}
                 placeholderTextColor={COLORS.textGray}
-                placeholder="Search Countries"
+                placeholder="Search gift cards"
                 value={searchText}
-                clearButtonMode='always'
                 autoCorrect={false}
                 autoCapitalize='none'
                 onChangeText={text => searchFunction(text)}
             />
+            <TouchableOpacity onPress={() => setSearchText(undefined)}>
+                <Image source={icons.cancel} 
+                    style={{
+                        height: wp(4), 
+                        width: wp(4), 
+                        resizeMode: 'contain', 
+                        tintColor: COLORS.backBtnBG,
+                        marginRight: wp(2)
+                    }}
+                />
+            </TouchableOpacity>
         </View>
 
-        <Text style={styles.notice}>{countryCount} Gift Cards countries loaded!</Text>
+        <Text style={styles.notice}>{countryCount} Gift Cards loaded!</Text>
 
         <FlatList
             data={data}
             showsVerticalScrollIndicator={ false }
             renderItem={ renderItem }
-            keyExtractor={(item) => item.isoName}
+            keyExtractor={(item) => item.productId}
         />
 
         {/**
@@ -191,4 +206,4 @@ const styles = StyleSheet.create({
         marginTop: wp(8)
     }
 })
-export default GiftCardsByCountry;
+export default LoadCountryCardScreen;

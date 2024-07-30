@@ -8,27 +8,15 @@ import { StyleSheet,
         Platform} from 'react-native'
          import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import { FONTS, COLORS, icons, images } from '../../constants'
-import { SvgUri } from 'react-native-svg';
 
 const GiftCardList = ({title, image, onPress, type}) => {
 
   return (
     <TouchableOpacity onPress={onPress} style={styles.container}>
 
-      {(type == 1) &&
-        <SvgUri 
-            width="35"
-            height="35"
-            uri={image}
-            style={{
-              borderRadius: wp(5)
-            }}
-        />
-      }
-
       {(type == 2) &&
         <Image 
-          source={image}
+          source={{uri: `${image}`}}
           style={{
             height: wp(10), width: wp(10), resizeMode: 'contain'
           }}
@@ -65,7 +53,7 @@ const styles = StyleSheet.create({
     },
     container: {
         backgroundColor: COLORS.tabBGColor,
-        padding: wp(1),
+        padding: wp(1.5),
         paddingLeft: wp(3),
         borderRadius: Platform.OS === 'android' ? wp(4.5) : wp(4),
         flexDirection: 'row',
@@ -76,6 +64,5 @@ const styles = StyleSheet.create({
         borderStyle: 'solid',
         columnGap: wp(3),
         marginBottom: wp(2.5)
-
     }
 })

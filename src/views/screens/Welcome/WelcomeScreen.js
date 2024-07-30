@@ -89,6 +89,7 @@ const WelcomeScreen = ({navigation}) => {
           });
     
         getAuthCode(); 
+        
     }else{
         Toast.show({
             type: 'success',

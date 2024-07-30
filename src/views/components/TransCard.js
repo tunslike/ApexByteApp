@@ -34,18 +34,19 @@ const TransCard = ({narration, date, amount, status}) => {
 const styles = StyleSheet.create({
     txtNarration: {
         color: COLORS.darkGray,
-        fontFamily: FONTS.POPPINS_SEMIBOLD,
-        fontSize: wp(3.5)
+        fontFamily: FONTS.POPPINS_MEDIUM,
+        fontSize: wp(3)
     },
     txtDate: {
         color: COLORS.backBtnBG,
         fontFamily: FONTS.POPPINS_LIGHT,
-        fontSize: wp(3)
+        fontSize: wp(3),
+        marginLeft: wp(1)
     },
     txtAmt: {
         color: COLORS.orangeColor,
         fontFamily: FONTS.POPPINS_SEMIBOLD,
-        fontSize: wp(4.2)
+        fontSize: wp(3.5)
     },
     txtStatus: {
         color: COLORS.greenText,
@@ -67,7 +68,7 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.White,
         borderRadius: wp(3),
         paddingHorizontal: wp(2),
-        paddingVertical: Platform.OS === 'ios' ? wp(2) : null,
+        paddingVertical: Platform.OS === 'ios' ? wp(2) : wp(1),
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'center',

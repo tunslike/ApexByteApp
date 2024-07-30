@@ -2,6 +2,7 @@ import { Loader } from "../views/components";
 
 const COLORS = {
     White: '#FFFFFF',
+    redCaution: '#fa0000',
     ButtonTxtColor: '#1E1E1E',
     bgColor: '#201F22',
     primaryColor: '#BFFF07',

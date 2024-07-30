@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     columnGap: wp(3),
-    marginTop: wp(3)
+    marginTop: Platform.OS === 'android' ? wp(0.4) : wp(3)
   },
   settingBox: {
       backgroundColor: COLORS.tabBGColor,
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
       borderTopLeftRadius: wp(10),
       borderTopRightRadius: wp(10),
       height: '100%',
-      marginTop: wp(15)
+      marginTop: Platform.OS === 'android' ? wp(8) : wp(15)
 
   },
   txtAuth: {

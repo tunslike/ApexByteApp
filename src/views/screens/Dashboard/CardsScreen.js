@@ -14,44 +14,128 @@ import {
   Dimensions} from 'react-native';
 import axios from 'axios';
 import { COLORS, images, FONTS, icons, APIBaseUrl } from '../../../constants';
-import { GiftCardList, InnerHeader, VirtualCardList } from '../../components';
+import { GiftCardList, MyCardList, InnerHeader, Loader } from '../../components';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useFocusEffect } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
+import moment from 'moment';
 
 const CardsScreen = ({navigation}) => {
 
+  const entry_id = useSelector((state) => state.account.entry_id);
+
   const [tab, setTab] = useState(1);
+  const [loading, setIsLoading] = useState(null);
+  const [virtualCard, setVirtualCard] = useState([]);
+  const [giftCard, setGiftCard] = useState([]);
+  const [countCard, setCountCard] = useState(0);
+
+
+  const loadCards = () => {
+    setIsLoading(true);
+  
+    axios.get(APIBaseUrl.developmentUrl + 'product/getGiftCards/' + entry_id ,{},{
+        headers: {
+        'Content-Type' : 'application/json',
+        'Access-Control-Allow-Origin': 'http://localhost:3331'
+        }
+    })
+    .then(response => {
+  
+        setIsLoading(false)
+       
+        setGiftCard(response.data);
+        console.log(response.data)
+        
+    })
+    .catch(error => {
+        setIsLoading(false)
+        console.log(error + "1");
+    });
+  
+  }
+
+  useFocusEffect(
+    React.useCallback(() => {
+        loadCards();
+    }, [])
+  );
+  
 
   return (
-    <View
+    <ScrollView
       style={{
         flexGrow: 1,
         backgroundColor: COLORS.bgColor
       }}
     >
+    <Loader loading={loading} />
+
     <InnerHeader onPress={() => navigation.goBack()} title="My Virtual Cards" />
 
     <View style={styles.tabBox}>
       <TouchableOpacity onPress={() => setTab(1)} style={(tab == 1) ? styles.activeTab : styles.notActivetab}>
-          <Text style={[styles.activeTxt, {color: (tab == 1) ? COLORS.bgColor : COLORS.White}]}>Virtual Cards</Text>
+          <Text style={[styles.activeTxt, {color: (tab == 1) ? COLORS.bgColor : COLORS.White}]}>Gift Cards</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => setTab(2)} style={(tab == 2) ? styles.activeTab : styles.notActivetab}>
-          <Text style={[styles.notActiveTxt, {color: (tab == 2) ? COLORS.bgColor : COLORS.White}]}>Gift Cards</Text>
+          <Text style={[styles.notActiveTxt, {color: (tab == 2) ? COLORS.bgColor : COLORS.White}]}>Virtual Cards</Text>
       </TouchableOpacity>
     </View>
       
-    <View style={styles.tabBody}>
-        <Text style={styles.txtLine1}>Your virtual cards will show here</Text>
-        <Text style={styles.txtLine2}>No available virtual card found!</Text>
-    </View>
+    {
+      (tab == 1) &&
 
-    </View>
+        (giftCard.length > 0) ?
+        
+        <View style={styles.cardBox}>
+        <Text style={styles.notice}>{giftCard.length} Gift Cards countries loaded!</Text>
+
+          {
+            giftCard.map((item) => {
+              return (
+                <MyCardList key={item.CARD_ID}
+                  image={item.IMAGE_URL}
+                  amount={item.AMOUNT}
+                  status={1}
+                  title={item.CARD_NAME}
+                  date={moment(item.DATE_CREATED).format("DD-MMM-YYYY")}
+                />
+              )
+            })
+          }
+
+         
+        </View>
+
+        :
+        <View style={styles.tabBody}>
+            <Text style={styles.txtLine1}>Your virtual cards will show here</Text>
+            <Text style={styles.txtLine2}>No available virtual card found!</Text>
+        </View>
+    }
+
+
+  
+
+    </ScrollView>
   )
 }
 
 export default CardsScreen
 
 const styles = StyleSheet.create({
+  notice: {
+    color: COLORS.orangeColor,
+    fontFamily: FONTS.POPPINS_LIGHT,
+    fontSize: wp(2.8),
+    marginBottom: wp(2),
+    marginTop: wp(1.5),
+    marginLeft: wp(1.3)
+},
+  cardBox: {
+    marginHorizontal: wp(4),
+  },
   notActiveTxt: {
     color: COLORS.White,
     fontFamily: FONTS.POPPINS_MEDIUM,

@@ -19,7 +19,6 @@ import { GiftCardList, InnerHeader, Loader } from '../../components';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
-import filter from 'lodash.filter';
 
 
 const BuyGiftCardScreen = ({navigation, route}) => {
@@ -109,18 +108,18 @@ const BuyGiftCardScreen = ({navigation, route}) => {
         backgroundColor: COLORS.bgColor
       }}
     >
-    <InnerHeader onPress={() => navigation.goBack()} title="Buy Gift Card" />
+    <InnerHeader onPress={() => navigation.goBack()} title={`Buy ${cardName} Gift Cards`} />
 
     <Loader loading={loading} />
 
     <View style={styles.listBox}>
-        <Text style={styles.titleHdr}>Available Gift cards for Amazon</Text>
+        <Text style={styles.titleHdr}>Available Gift cards for {cardName}</Text>
 
 
         <View style={styles.searchBox}>
         <Image source={icons.search} 
             style={{
-                height: wp(7), width: wp(7), resizeMode: 'contain', tintColor: COLORS.backBtnBG
+                height: wp(6), width: wp(6), resizeMode: 'contain', tintColor: COLORS.backBtnBG
             }}
         />
                 <TextInput 
@@ -168,7 +167,7 @@ const styles = StyleSheet.create({
     },
     searchBar: {
       fontFamily: FONTS.POPPINS_REGULAR,
-      fontSize: wp(3.3),
+      fontSize: wp(3),
       color: COLORS.textGray,
       width: 'auto',
       flex: 1
@@ -176,7 +175,8 @@ const styles = StyleSheet.create({
      searchBox: {
          flexDirection: 'row',
          justifyContent: 'flex-start',
-         padding: wp(2.5),
+         padding: Platform.OS === 'android' ? wp(0.5) : wp(2.5),
+         paddingLeft: Platform.OS === 'android' ? wp(2) : null,
          alignItems: 'center',
          columnGap: wp(3),
          borderColor: COLORS.backBtnBG,

@@ -19,10 +19,7 @@ import { Button, InputTextbox, InnerHeader } from '../../components';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const PayGiftCardRequest = ({navigation, route}) => {
-
-  const {cardName, cardImage, currencyCode, minRecepAmt,
-         maxRecepAmt, minSenderAmt, maxSenderAmt, cardType} = route.params;
+const BuyGiftCardScreen = ({navigation, route}) => {
 
   const [minValue, setMinValue] = useState(25);
   const [cardAmount, setCardAmount] = useState('30');
@@ -46,84 +43,54 @@ const PayGiftCardRequest = ({navigation, route}) => {
         backgroundColor: COLORS.bgColor
       }}
     >
-    <InnerHeader onPress={() => navigation.goBack()} title="Buy Gift Card" />
-
-    <View style={styles.carBoxName}>
-
-      <Image 
-        source={{uri: `${cardImage}`}}
-        style={{
-          height: wp(18), width: wp(30), resizeMode: 'contain'
-        }}
-      />
-      <View>
-        <Text style={styles.cardName}>{cardName}</Text>
-        <Text style={styles.maxAmt}>Max Amount: $500</Text>
-      </View>
-    </View>
+    <InnerHeader onPress={() => navigation.goBack()} title="Buy Virtual Card" />
 
     <View style={styles.listBox}>
         <Text style={styles.titleHdr}>Provide order information below</Text>
     </View>
 
     <View style={styles.paymentBox}>
-        <Text style={styles.txtWallet}>Amount</Text>
+
+
+    <Text style={styles.txtWallet}>Card Amount</Text>
+    <View style={styles.walletBox}>
+      <Text style={styles.curSign}>$</Text>
+      <InputTextbox 
+        phone={1}
+        value={cardAmount}
+        defaultValue={cardAmount}
+        onChange={(text) => setCardAmount(text)}
+        maxlength={3}
+      />
+    </View>
+
+        <Text style={styles.txtWallet}>Card Name</Text>
         <View style={styles.walletBox}>
-          <Text style={styles.curSign}>$</Text>
-          <InputTextbox 
+            <InputTextbox 
             phone={1}
             value={cardAmount}
             defaultValue={cardAmount}
             onChange={(text) => setCardAmount(text)}
             maxlength={3}
-          />
+        />
         </View>
 
-        <Text style={styles.txtWallet}>Quantity</Text> 
-            <View style={styles.walletBox}>
-            <Text style={styles.txtid}>{quantity}</Text>
-
-            <View style={styles.tabControls}>
-
-            <TouchableOpacity onPress={() => (cardAmount > 0) ? increaseCount(0) : null}>
-            <Image source={icons.quan_arrow_left} 
-                style={{
-                    height: wp(6.5), width: wp(6.5), tintColor: COLORS.textGray, resizeMode: 'contain'
-                }}
-            />
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => (cardAmount > 0) ? increaseCount(1) : null}>
-            <Image source={icons.quan_arrow_right} 
-                style={{
-                    height: wp(6.5), width: wp(6.5), tintColor: COLORS.textGray, resizeMode: 'contain'
-                }}
-            />
-        </TouchableOpacity>
-
-            </View>
-        </View>
-
-        <Text style={[styles.txtWallet, {marginTop: wp(2)}]}>Total Amount to pay</Text>
-        <View style={styles.walletBoxAmout}>
-          <Text style={styles.curSign}>$</Text> 
-          <Text style={styles.txtTotalAmt}>{quantity * cardAmount}</Text> 
-        </View>
     </View>
+ 
+
 
     <View style={{marginHorizontal: wp(4), marginTop: wp(10)}}>
     <Button
-      onPress={() => navigation.navigate("CryptoPayment", {totalAmount: (quantity * cardAmount), quantity: quantity,  cardName, cardName, image:cardImage})}
       disabled={(cardAmount == 0) ? true : false} 
       title="Pay with Cryptocurrency" 
     />
     </View>
- 
+
     </ScrollView>
   )
 }
 
-export default PayGiftCardRequest
+export default BuyGiftCardScreen
 
 const styles = StyleSheet.create({
   maxAmt: {

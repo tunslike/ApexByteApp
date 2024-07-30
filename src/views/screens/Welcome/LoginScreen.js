@@ -57,6 +57,7 @@ const LoginScreen = ({navigation}) => {
         })
         .catch(error => {
             console.log(error + "1");
+            setIsLoading(false)
         });
     }
 
