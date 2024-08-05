@@ -30,12 +30,22 @@ const CardsScreen = ({navigation}) => {
   const [virtualCard, setVirtualCard] = useState([]);
   const [giftCard, setGiftCard] = useState([]);
   const [countCard, setCountCard] = useState(0);
+  const [cardData, setCardData] = useState([]);
 
 
-  const loadCards = () => {
+  const loadVirtualCardType = (cardType) => {
+
+      setTab(cardType)
+      loadCards(cardType)
+  }
+
+  const loadCards = (cardtype) => {
+
+    setCardData([])
+
     setIsLoading(true);
   
-    axios.get(APIBaseUrl.developmentUrl + 'product/getGiftCards/' + entry_id ,{},{
+    axios.get(APIBaseUrl.developmentUrl + `product/getGiftCards/${entry_id}/${cardtype}`,{},{
         headers: {
         'Content-Type' : 'application/json',
         'Access-Control-Allow-Origin': 'http://localhost:3331'
@@ -45,20 +55,21 @@ const CardsScreen = ({navigation}) => {
   
         setIsLoading(false)
        
-        setGiftCard(response.data);
-        console.log(response.data)
+        setCardData(response.data);
+  
         
     })
     .catch(error => {
         setIsLoading(false)
-        console.log(error + "1");
+        console.log(error);
     });
   
   }
 
   useFocusEffect(
     React.useCallback(() => {
-        loadCards();
+      setCardData([])
+        loadCards(1);
     }, [])
   );
   
@@ -75,29 +86,34 @@ const CardsScreen = ({navigation}) => {
     <InnerHeader onPress={() => navigation.goBack()} title="My Virtual Cards" />
 
     <View style={styles.tabBox}>
-      <TouchableOpacity onPress={() => setTab(1)} style={(tab == 1) ? styles.activeTab : styles.notActivetab}>
+      <TouchableOpacity onPress={() => loadVirtualCardType(1)} style={(tab == 1) ? styles.activeTab : styles.notActivetab}>
           <Text style={[styles.activeTxt, {color: (tab == 1) ? COLORS.bgColor : COLORS.White}]}>Gift Cards</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => setTab(2)} style={(tab == 2) ? styles.activeTab : styles.notActivetab}>
+      <TouchableOpacity onPress={() => loadVirtualCardType(2)} style={(tab == 2) ? styles.activeTab : styles.notActivetab}>
           <Text style={[styles.notActiveTxt, {color: (tab == 2) ? COLORS.bgColor : COLORS.White}]}>Virtual Cards</Text>
       </TouchableOpacity>
     </View>
       
     {
-      (tab == 1) &&
-
-        (giftCard.length > 0) ?
+  
+      (cardData.length > 0) ?
         
         <View style={styles.cardBox}>
-        <Text style={styles.notice}>{giftCard.length} Gift Cards countries loaded!</Text>
+        <Text style={styles.notice}>{cardData.length} Gift Cards loaded!</Text>
 
           {
-            giftCard.map((item) => {
+            cardData.map((item) => {
               return (
-                <MyCardList key={item.CARD_ID}
-                  image={item.IMAGE_URL}
+                <MyCardList 
+                  onPress={() => navigation.navigate('RedeemCard', {cardId:item.CARD_ID,cardName: item.CARD_NAME, cardType: item.CARD_TYPE, 
+                  cardImage: item.IMAGE_URL, amount: item.AMOUNT, quantity: item.QUANTITY, 
+                  redeemInstructure: item.REDEEM_INSTRUCTION, dateCreated: item.DATE_CREATED, dateRedeemed: item.DATE_REDEEMED,
+                  cardStatus: item.REDEEM_STATUS, transid: item.TRANSACTION_ID, email: item.RECIPENT_EMAIL, phone: item.RECIPENT_PHONE})}
+                  key={item.CARD_ID}
+                  image={(tab == 1) ? item.IMAGE_URL : images.virtualCard}
                   amount={item.AMOUNT}
-                  status={1}
+                  status={(item.REDEEM_STATUS == 'Available') ? 1 : 2}
+                  type={tab}
                   title={item.CARD_NAME}
                   date={moment(item.DATE_CREATED).format("DD-MMM-YYYY")}
                 />
@@ -107,15 +123,27 @@ const CardsScreen = ({navigation}) => {
 
          
         </View>
-
         :
+
         <View style={styles.tabBody}>
-            <Text style={styles.txtLine1}>Your virtual cards will show here</Text>
-            <Text style={styles.txtLine2}>No available virtual card found!</Text>
+            {
+              (tab == 1) && 
+              <View>
+              <Text style={styles.txtLine1}>Your gift cards will show here</Text>
+              <Text style={styles.txtLine2}>No available gift card found!</Text></View>
+            }
+
+            {
+              (tab == 2) && 
+              <View>
+              <Text style={styles.txtLine1}>Your virtual cards will show here</Text>
+              <Text style={styles.txtLine2}>No available virtual card found!</Text></View>
+            }
+          
         </View>
     }
 
-
+  
   
 
     </ScrollView>

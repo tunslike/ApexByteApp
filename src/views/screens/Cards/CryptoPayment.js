@@ -35,10 +35,9 @@ const dataPayment = [
 
 const CryptoPayment = ({navigation, route}) => {
 
-  const {totalAmount, cardName, quantity, image} = route.params;
+  const {totalAmount, cardType, cardName, redeemInstruction, cardAmount, quantity, image, productID} = route.params;
   const [loading, setIsLoading] = useState(null);
   const [data, setData] = useState([]);
-
 
   // function to test using fetch
     const loadCryptomusPaymentServiceUpdate = async () => {
@@ -178,11 +177,23 @@ else if(network.toLowerCase().indexOf("trx") > -1) {
     <View style={styles.carBoxName}>
         <Text style={styles.cardTitle}>Your Order</Text>
         <View style={styles.innerBox}>
-        <Image source={{uri: `${image}`}} 
-          style={{
-            height: wp(12), width: wp(20), resizeMode: 'contain'
-          }}
-        />
+        {(cardName == 'Virtual Credit Card') && 
+
+          <Image source={image} 
+            style={{
+              height: wp(12), width: wp(20), resizeMode: 'contain'
+            }}
+          />
+        }
+
+        {(cardName != 'Virtual Credit Card') &&
+            <Image source={{uri: `${image}`}} 
+            style={{
+              height: wp(12), width: wp(20), resizeMode: 'contain'
+            }}
+          />
+        }
+       
             <View style={{flex: 1}}>
                 <Text style={styles.txtGiftName}>{cardName}</Text>
                 <Text style={styles.txtQuantity}>Quantity: {quantity}</Text>
@@ -201,7 +212,7 @@ else if(network.toLowerCase().indexOf("trx") > -1) {
                 title={item.CURRENCY} 
                 image={PaymentImageMatchAlgorithm(item.CURRENCY)}
                 network={item.NETWORK}
-                onPress={() => navigation.navigate("MakePayment", {cardName:cardName, quantity: quantity, currency: item.CURRENCY, network: item.NETWORK,
+                onPress={() => navigation.navigate("MakePayment", {giftCardProductID:productID, cardType:cardType, cardName:cardName, cardAmount:cardAmount, quantity: quantity, redeemInstruction:redeemInstruction, currency: item.CURRENCY, network: item.NETWORK,
                                                   currencyImg: PaymentImageMatchAlgorithm(item.CURRENCY), amount: totalAmount, giftImage: image})}
               />
             )
@@ -222,7 +233,6 @@ else if(network.toLowerCase().indexOf("trx") > -1) {
     </ScrollView>
   )
 }
-
 
 const styles = StyleSheet.create({
   txtGiftName: {
@@ -265,11 +275,11 @@ const styles = StyleSheet.create({
         fontFamily: FONTS.POPPINS_MEDIUM,
         fontSize: wp(3.5),
         color: COLORS.textGray,
-        marginBottom: wp(3)
+        marginBottom: wp(2)
     },
     listBox: {
         marginHorizontal: wp(5),
-        marginTop: wp(8)
+        marginTop: wp(4)
     }
 })
 

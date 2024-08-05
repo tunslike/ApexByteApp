@@ -19,14 +19,78 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 
-const ViewTransactionDetails = ({navigation}) => {
+const ViewTransactionDetails = ({navigation, route}) => {
 
+    const {trans_id} = route.params;
 
     const entry_id = useSelector((state) => state.account.entry_id);
     
     const [loading, setIsLoading] = useState(false);
-    const [paymentStatus, setPaymentStatus] = useState(1);
-    const [qrImage, setQRImage] = useState('')
+    const [paymentStatus, setPaymentStatus] = useState(0);
+    const [qrImage, setQRImage] = useState('');
+    const [details, setDetails] = useState('');
+
+    const FetchTransactionStatus = () => {
+
+    setIsLoading(true)
+
+    axios.get(APIBaseUrl.developmentUrl + `product/fetchPaymentStatus/${trans_id}`,{},{
+        headers: {
+          'Content-Type' : 'application/json' 
+        }
+    })
+    .then(response => {
+  
+        setIsLoading(false)
+  
+        console.log(response.data);
+        setDetails(response.data);
+
+        GenerateCryptoAPIQRIamge(response.data.WALLET_ADDRESS_IN);
+  
+    })
+    .catch(error => {
+        setIsLoading(false)
+        console.log(error + "1");
+    });
+  }
+
+  const GenerateCryptoAPIQRIamge = async (address_in) => {
+
+    const query = new URLSearchParams({
+        address: address_in,
+        value: '0',
+        size: '512'
+      }).toString();
+    
+    try {
+
+        const ticker = USDT_Account.ticker;
+
+        await fetch(`https://api.cryptapi.io/${ticker}/qrcode/?${query}`)
+        .then(response => response.json())
+        .then(data => {
+
+            setIsLoading(false);
+
+            var qr_da = `data:image/png;base64,${data.qr_code}`;
+
+            setQRImage(qr_da);
+
+        });
+    
+    }catch (error) {
+        console.log(error)
+    }
+}
+  
+
+     //USE EFFECT
+ useEffect(() => {
+
+    FetchTransactionStatus();
+
+  }, []);
 
   return (
     <ScrollView
@@ -72,12 +136,12 @@ const ViewTransactionDetails = ({navigation}) => {
             height: wp(10), width: wp(10), resizeMode: 'contain'
         }}
     />
-    <Text style={styles.txtCurr}>USDT</Text>
+    <Text style={styles.txtCurr}>{details.CURRENCY}</Text>
     </View>
         </View>
         <View>
              <Text style={styles.cardTitle}>Amount</Text>
-             <Text style={styles.txtAmount}>$ 30</Text>
+             <Text style={styles.txtAmount}>$ {details.TOTAL_AMOUNT}</Text>
         </View>
     </View>
 
@@ -89,7 +153,7 @@ const ViewTransactionDetails = ({navigation}) => {
 <View style={styles.paymentBox}>
     <Text style={styles.txtWallet}>Wallet Address</Text>
     <View style={styles.walletBox}>
-        <Text style={styles.txtid}>TVhznry6y5ytdVKPDFdFfAEMYTe57AcYGY</Text>
+        <Text style={styles.txtid}>{details.WALLET_ADDRESS_IN}</Text>
         <TouchableOpacity>
             <Image source={icons.copyText} 
                 style={{
@@ -101,7 +165,7 @@ const ViewTransactionDetails = ({navigation}) => {
 
     <Text style={[styles.txtWallet, {marginTop: wp(6)}]}>Payment Details</Text>
     <View style={styles.walletBox}>
-        <Text style={styles.txtid}>Send 30 USD to the wallet 
+        <Text style={styles.txtid}>Send {details.TOTAL_AMOUNT} USD to the wallet 
         address</Text>
         <TouchableOpacity>
             <Image source={icons.copyText} 

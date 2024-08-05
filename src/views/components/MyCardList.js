@@ -10,16 +10,31 @@ import { StyleSheet,
 import { FONTS, COLORS, icons, images } from '../../constants'
 import { SvgUri } from 'react-native-svg';
 
-const MyCardList = ({image, status, onPress, date, amount, title}) => {
+const MyCardList = ({image, status, onPress, type, date, amount, title}) => {
   return (
     <TouchableOpacity onPress={onPress} style={styles.container}>
 
-        <Image 
-          source={{uri: image}}
-          style={{
-            height: wp(15), width: wp(15), resizeMode: 'contain'
-          }}
-        />
+        {
+          (type == 1) &&
+          <Image 
+            source={{uri: image}}
+            style={{
+              height: wp(15), width: wp(15), resizeMode: 'contain'
+            }}
+          />
+        }
+
+        {
+          (type == 2) &&
+          <Image 
+            source={image}
+            style={{
+              height: wp(15), width: wp(15), resizeMode: 'contain'
+            }}
+          />
+        }
+        
+      
       <View style={{flex: 1}}>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.txtDate}>Purchased: 02-Jun-2024</Text>

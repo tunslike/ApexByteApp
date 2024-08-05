@@ -21,13 +21,23 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 const PayGiftCardRequest = ({navigation, route}) => {
 
-  const {cardName, cardImage, currencyCode, minRecepAmt,
-         maxRecepAmt, minSenderAmt, maxSenderAmt, cardType} = route.params;
+  const {cardName, cardType, cardImage, currencyCode, minRecepAmt, giftCardID, redeemInstruction,
+         maxRecepAmt, minSenderAmt, maxSenderAmt, rangeType, giftCardRange} = route.params;
+
+  console.log(giftCardID)
 
   const [minValue, setMinValue] = useState(25);
   const [cardAmount, setCardAmount] = useState('30');
   const [totalAmount, setTotalAmount] = useState(0);
   const [quantity, setQuantity] = useState(1);
+  const [active, setActive] = useState('');
+  const [selectedButton, setSelectedButton] = useState(null);
+
+  const handlePress = (index, amount) => {
+    setSelectedButton(index);
+    setCardAmount(amount)
+    setQuantity(1);
+  };
 
   const increaseCount = (type) => {
     if(type == 1) {
@@ -58,7 +68,7 @@ const PayGiftCardRequest = ({navigation, route}) => {
       />
       <View>
         <Text style={styles.cardName}>{cardName}</Text>
-        <Text style={styles.maxAmt}>Max Amount: $500</Text>
+        <Text style={styles.maxAmt}>Max Amount: {cardType}</Text>
       </View>
     </View>
 
@@ -66,8 +76,12 @@ const PayGiftCardRequest = ({navigation, route}) => {
         <Text style={styles.titleHdr}>Provide order information below</Text>
     </View>
 
-    <View style={styles.paymentBox}>
-        <Text style={styles.txtWallet}>Amount</Text>
+      <View style={styles.paymentBox}>
+      <Text style={styles.txtWallet}>Amount</Text>
+     
+
+      {(rangeType == 'RANGE') && 
+        <View>
         <View style={styles.walletBox}>
           <Text style={styles.curSign}>$</Text>
           <InputTextbox 
@@ -77,7 +91,30 @@ const PayGiftCardRequest = ({navigation, route}) => {
             onChange={(text) => setCardAmount(text)}
             maxlength={3}
           />
+          </View>
         </View>
+      }
+
+      {(rangeType == 'FIXED') && 
+        <View style={styles.fixedLiist}>
+        {
+        giftCardRange.map((item, index) => {
+          return (
+            <TouchableOpacity 
+                key={index} 
+                onPress={() => handlePress(index, item)}
+                style={[styles.fixedBtn, selectedButton === index && styles.selectedButton]}
+              >
+              <Text style={[styles.fixTxt, selectedButton === index && styles.selectedTxt]}>${item}</Text>
+            </TouchableOpacity>
+          )
+        })
+        }
+        </View>
+      }
+  
+       
+      
 
         <Text style={styles.txtWallet}>Quantity</Text> 
             <View style={styles.walletBox}>
@@ -113,7 +150,7 @@ const PayGiftCardRequest = ({navigation, route}) => {
 
     <View style={{marginHorizontal: wp(4), marginTop: wp(10)}}>
     <Button
-      onPress={() => navigation.navigate("CryptoPayment", {totalAmount: (quantity * cardAmount), quantity: quantity,  cardName, cardName, image:cardImage})}
+      onPress={() => navigation.navigate("CryptoPayment", {totalAmount: (quantity * cardAmount),cardAmount:cardAmount, quantity: quantity,  cardName: cardName, cardType: cardType, redeemInstruction:redeemInstruction, image:cardImage, productID: giftCardID})}
       disabled={(cardAmount == 0) ? true : false} 
       title="Pay with Cryptocurrency" 
     />
@@ -126,6 +163,36 @@ const PayGiftCardRequest = ({navigation, route}) => {
 export default PayGiftCardRequest
 
 const styles = StyleSheet.create({
+  selectedTxt: {
+    color: COLORS.primaryColor,
+    fontFamily: FONTS.POPPINS_MEDIUM
+  },
+  selectedButton: {
+    borderColor: COLORS.primaryColor,
+    borderWidth: 1,
+    borderStyle: 'solid' 
+  },
+  fixTxt: {
+    fontFamily: FONTS.POPPINS_REGULAR,
+    fontSize: wp(3.8),
+    color: COLORS.textGray
+  },
+  fixedBtn: {
+      backgroundColor: COLORS.bgColor,
+      paddingVertical: wp(2),
+      paddingHorizontal: wp(3),
+      borderRadius: wp(2)
+  },
+  fixedLiist: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    columnGap: wp(3),
+    marginBottom: wp(6),
+    marginLeft: wp(2),
+    flexWrap: 'wrap',
+    rowGap: wp(3)
+  },
   maxAmt: {
     fontFamily: FONTS.POPPINS_REGULAR,
     color: COLORS.textGray,

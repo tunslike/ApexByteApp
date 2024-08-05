@@ -22,25 +22,37 @@ import { useSelector } from 'react-redux';
 const PaymentSuccessfulScreen = ({navigation, route}) => {
 
     const entry_id = useSelector((state) => state.account.entry_id);
-    const {cardName, quantity, currency, currencyImg, amount} = route.params;
+    const {entryID, cardType, orderID, redeemInstruction, image, responseData} = route.params;
     const [loading, setIsLoading] = useState(false);
 
     const ProcessGiftCardTransaction = () => {
 
           //data
           const data = {
-            entryID: entry_id,
-            cardType : "Gift Card",
-            cardName :cardName, 
-            amount: amount, 
-            quantity: quantity,
+            entryID : entryID,
+            cardType : cardType,
+            cardName : responseData.product.productName, 
+            amount: responseData.product.unitPrice, 
+            quantity : responseData.product.quantity,
             issuer : "Reloadly", 
             payment_type : "Cryptocurrency",
-            image_url : currencyImg,
-            redeem_status : 'Available',
+            image_url : (cardType == 'Virtual Credit Card') ? '' : image[0],
+            redeem_status : "Available",
+            orderID : orderID, 
+            amount_purchased : responseData.amount, 
+            currency_code : responseData.currencyCode, 
+            trans_id : responseData.transactionId, 
+            fee : responseData.fee, 
+            recipientEmail : "digitalsolutions@apexbyte.tech", 
+            recipientPhone : "090531003512", 
+            paymentStatus : responseData.status, 
+            transactionDateTime : responseData.transactionCreatedTime,
+            redeemInstruction:redeemInstruction
         }
 
         setIsLoading(true);
+
+       console.log(data)
 
         axios.post(APIBaseUrl.developmentUrl + 'product/createGiftCard',data,{
             headers: {
@@ -63,6 +75,14 @@ const PaymentSuccessfulScreen = ({navigation, route}) => {
             console.log(error + "1");
         });
     }
+
+
+ //USE EFFECT
+ useEffect(() => {
+
+    ProcessGiftCardTransaction();
+  
+  }, []);
 
   return (
     <View
@@ -132,7 +152,7 @@ const styles = StyleSheet.create({
       },
     txtCurr: {
         fontFamily: FONTS.POPPINS_MEDIUM,
-        fontSize: Platform.OS === 'android' ? wp(4) : wp(5), 
+        fontSize: Platform.OS === 'android' ? wp(4) : wp(4), 
         color: COLORS.White,
         marginTop: wp(5),
         textAlign: 'center'

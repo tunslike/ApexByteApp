@@ -86,17 +86,22 @@ const DashboardScreen = ({navigation}) => {
 }
 //end of truncate string
 
+useFocusEffect(
+  React.useCallback(() => {
+   
+    loadFetchTransactions();
 
-    //USE EFFECT
+  }, [])
+);
+
+
+//USE EFFECT
     useEffect(() => {
 
       //return greetings
       this.checkTimeGreetings();
-
-      loadFetchTransactions();
   
     }, []);
-
 
     const renderItem = ({item}) => (
         <RebuyCard 
@@ -140,18 +145,52 @@ const DashboardScreen = ({navigation}) => {
     {/* Body Component Starts */}
 
     <View style={styles.purchaseList}>
-        <PurchaseCard
+    <PurchaseCard
             onPress={() => navigation.navigate("PurchaseVirtualCard")}
             image={images.mastercard}
             title="Purchase Virtual Card"
             desc="Buy virtual card for online payment"
         />
-        <PurchaseCard 
+
+        {/**
+        <TouchableOpacity
+        style={styles.dashboardCard}
+      >
+          <Image source={images.virtualCards} 
+            style={{
+              height: wp(42), width: wp(40), resizeMode: 'contain'
+            }}
+          />
+          <View>
+            <Text style={styles.dashTitle}>Purchase Virtual Card</Text>
+            <Text style={styles.dashDesc}>Buy virtual card for online payment</Text>
+          </View>
+      </TouchableOpacity> */}
+       
+        <TouchableOpacity
           onPress={() => navigation.navigate("GiftCardCategory")}
-          image={images.ebay}
+          style={styles.dashboardCard}
+        >
+            <Image source={images.virtualCardsImage} 
+              style={{
+                height: wp(42), width: wp(40), resizeMode: 'contain'
+              }}
+            />
+            <View>
+              <Text style={styles.dashTitle}>Buy Gift Cards</Text>
+              <Text style={styles.dashDesc}>Buy your gift cards with ease</Text>
+            </View>
+        </TouchableOpacity>
+        {/*
+             <PurchaseCard 
+          onPress={() => navigation.navigate("GiftCardCategory")}
+          image={images.virtualCardsImage}
           title="Buy Gift Card"
           desc="Buy gift cards with ease"
     />
+
+           */}
+     
     </View>
 
     {/* Body Component Ends */}
@@ -229,6 +268,28 @@ const DashboardScreen = ({navigation}) => {
 }
 
 const styles = StyleSheet.create({
+  dashDesc: {
+    fontFamily: FONTS.POPPINS_REGULAR,
+    color: COLORS.primaryColor,
+    fontSize: wp(3),
+    width: '80%',
+    marginTop: wp(1)
+},
+  dashTitle: {
+    fontFamily: FONTS.POPPINS_SEMIBOLD,
+    color: COLORS.White,
+    fontSize: wp(3.8)
+},
+  dashboardCard: {
+    backgroundColor: COLORS.tabBGColor,
+    borderRadius: wp(8),
+    marginBottom: wp(3),
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingLeft: wp(10),
+    columnGap: wp(4)
+  },
   noTransTxt: {
     fontFamily: FONTS.POPPINS_REGULAR,
     fontSize: wp(3),

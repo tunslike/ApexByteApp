@@ -50,8 +50,7 @@ const BuyGiftCardScreen = ({navigation, route}) => {
                   setIsLoading(false);
                   setGiftCardCount(data.content.length)
                   setData(data.content)
-                  setGiftCardList(data.content)
-                  
+                  setGiftCardList(data.content)                  
 
               });
               
@@ -93,10 +92,11 @@ const BuyGiftCardScreen = ({navigation, route}) => {
         type={2}
         image={item.logoUrls} 
         title={item.productName} 
-        onPress={() => navigation.navigate("PayGiftCard", {cardName: item.productName, cardImage: item.logoUrls,
+        onPress={() => navigation.navigate("PayGiftCard", {cardName: item.productName, cardType: 'Gift Card', cardImage: item.logoUrls,
                       currencyCode: item.recipientCurrencyCode, minRecepAmt: item.minRecipientDenomination,
                       maxRecepAmt: item.maxRecipientDenomination, minSenderAmt: item.minSenderDenomination,
-                      maxSenderAmt: item.maxSenderDenomination, cardType: item.denominationType
+                      maxSenderAmt: item.maxSenderDenomination, rangeType: item.denominationType,
+                      giftCardRange: item.fixedRecipientDenominations, globa: item.global, giftCardID: item.productId, redeemInstruction: encodeURI(`${item.redeemInstruction.concise} ${item.redeemInstruction.verbose}`)
         })}
     />
 );

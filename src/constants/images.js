@@ -19,8 +19,14 @@ const ebay_card = require("../assets/images/ebay_card.png")
 const xbox_card = require("../assets/images/xbox_card.png")
 const playstore_card = require("../assets/images/playstation.png")
 const spotify_card = require("../assets/images/spotify_card.png")
+const virtualCard = require("../assets/icons/virtual_card.png")
+const virtualCardsImage = require("../assets/images/virtualCards.png")
+const virtualCards = require("../assets/images/credit_cards.png")
 
 export default {
+    virtualCards,
+    virtualCardsImage,
+    virtualCard,
     spotify_card,
     playstore_card,
     ebay_card,

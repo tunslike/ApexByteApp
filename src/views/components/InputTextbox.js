@@ -36,8 +36,8 @@ const InputTextbox = ({ placeholder,maxlength, defaultValue, phone, onFocus, onC
 
 const styles = StyleSheet.create({
     inputStyle: {
-    fontFamily: FONTS.POPPINS_MEDIUM,
-    fontSize: Platform.OS === 'android' ? wp(4.8) : wp(4.5),
+    fontFamily: FONTS.POPPINS_REGULAR,
+    fontSize: Platform.OS === 'android' ? wp(4) : wp(3.5),
     color: COLORS.White,
     width: "100%"
 

@@ -87,7 +87,7 @@ const HistoryScreen = ({navigation}) => {
           transaction.map((item) => {
             return (
               <TransactionCard 
-                onPress={() => navigation.navigate("ViewTransaction")}
+                onPress={() => navigation.navigate("ViewTransaction", {trans_id: item.TRANSACTION_ID})}
                 key={item.TRANSACTION_ID}
                 narration={TruncateString(item.NARRATION)}
                 date={moment(item.DATE_CREATED).format("DD-MMM-YYYY")}

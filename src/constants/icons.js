@@ -33,8 +33,10 @@ const caution = require("../assets/icons/alert_caution.png")
 const brokenImage = require("../assets/icons/broken_image.png")
 const confirm_payment = require("../assets/icons/confirm_payment.png")
 const pending_payment = require("../assets/icons/pending_payment.png")
+const close_modal = require("../assets/icons/close_modal.png")
 
 export default {
+    close_modal,
     pending_payment,
     confirm_payment,
     brokenImage,

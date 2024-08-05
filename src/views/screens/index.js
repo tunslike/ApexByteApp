@@ -16,8 +16,10 @@ import PaymentSuccessfulScreen from "./Cards/PaymentSuccessfulScreen";
 import LoadCountryCardScreen from "./Cards/LoadCountryCardScreen";
 import BuyVirtualCardDetails from "./Cards/BuyVirtualCardDetails";
 import ViewTransactionDetails from "./Cards/ViewTransactionDetails";
+import RedeemCardScreen from "./Cards/RedeemCardScreen";
 
 export {
+    RedeemCardScreen,
     ViewTransactionDetails,
     LoadCountryCardScreen,
     BuyVirtualCardDetails,

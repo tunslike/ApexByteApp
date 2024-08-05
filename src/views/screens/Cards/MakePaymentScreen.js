@@ -24,9 +24,11 @@ import md5 from 'md5';
 
 const MakePaymentScreen = ({navigation, route}) => {
 
-    const {cardName, quantity, network, currency, currencyImg, giftImage, amount} = route.params;
+    const {cardName, cardType, redeemInstruction, cardAmount, giftCardProductID, quantity, network, currency, currencyImg, giftImage, amount} = route.params;
 
     const entry_id = useSelector((state) => state.account.entry_id);
+    const access_token = useSelector((state) => state.account.reloadlyAccessToken);
+
     const [loading, setIsLoading] = useState(false);
     const [orderID, setOrderID] = useState(uuid.v4());
     const [lifetime, setLifetime] = useState(1800);
@@ -112,12 +114,11 @@ const MakePaymentScreen = ({navigation, route}) => {
                     GenerateCryptoAPIQRIamge(data.address_in);
                 }
 
-                console.log('')
-                console.log('*************** Request is back *****************')
+        console.log('')
+        console.log('*************** Request is back *****************')
 
             })
-        
-
+    
           }catch (error) {
               setIsLoading(false)
           }
@@ -152,60 +153,66 @@ const MakePaymentScreen = ({navigation, route}) => {
         }
     }
 
-    // function to test using fetch
-    const createCryptoPaymentInvoice = async () => {
+ // function to order gift card
+const RequestGiftCardOrder = async () => {
 
-        const bodyRequest = {
-            "amount": "20",
-            "currency": "USDT",
-            "order_id": "6756ed63-e02b-444b-b82c-9f66d7dde6a",
-        }
+        try {
 
-        let encodePayload = Buffer.from('', 'utf-8').toString('base64');
-        let signedMD5 = md5(encodePayload + CryptomusKeys.payment_api_key);
+            const options = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/com.reloadly.giftcards-v1+json',
+                    Authorization: `Bearer ${access_token}`
+                },
+                body: JSON.stringify({
+                    quantity: quantity,
+                    unitPrice: cardAmount,
+                    customIdentifier: orderID,
+                    senderName: 'ApexByte Technologies',
+                    recipientEmail: 'digitalsolutions@apexbyte.tech',
+                    recipientPhoneDetails: {countryCode: 'NG', phoneNumber: '09053100351'},
+                    preOrder: false,
+                    productId: giftCardProductID
+                })
+              };
 
-        console.log(signedMD5)
-  
+              
+
+              console.log(options.body)
+
             setIsLoading(true);
-  
-            try {
-  
-                const options = {
-                  method: 'POST',
-                  headers: {
-                    'merchant': `${CryptomusKeys.merchant_id}`,
-                    'sign' : `${signedMD5}`,
-                    'Content-Type' : 'application/json' 
-                  },
-                  body: {
-                    "amount": "20",
-                    "currency": "USDT",
-                    "order_id": "6756ed63-e02b-444b-b82c-9f66d7dde6a",
-                  },
-                  };
 
-                await fetch(`https://api.cryptomus.com/v1/payment`, options)
-                .then(response => response.json())
-                .then(data => {
-    
-                    setIsLoading(false);
+            await fetch(`https://giftcards-sandbox.reloadly.com/orders`, options)
+            .then(response => response.json())
+            .then(data => {
+
+                setIsLoading(false);
 
 
-                    console.log("********** Response from Service ****************")
-                    console.log('')
-  
-                    console.log(data);
+                console.log("********** Response from Service ****************")
+                console.log('')
 
-                    console.log('');
-                    console.log('*********** End of Response ***********')
+                console.log(data);
 
-                });
-                
-            } catch (error) {
-              setIsLoading(false)
-            }
+                if(data.status == 'SUCCESSFUL') {
+                    navigation.navigate("PaymentSuccess", {entryID:entry_id, cardType:cardType, orderID:orderID, image:giftImage, redeemInstruction:redeemInstruction, responseData: data})
+                }else{
+
+                }
+
+                console.log('');
+                console.log('*********** End of Response ***********')
+
+            });
+            
+        } catch (error) {
+          setIsLoading(false)
         }
-        // end of function
+
+}
+ // end of function
+
 
  //USE EFFECT
  useEffect(() => {
@@ -216,9 +223,7 @@ const MakePaymentScreen = ({navigation, route}) => {
         console.log('no loading...')
     }
 
-
-   CryptAPIReceivePayment();
-   //GenerateCryptoAPIQRIamge();
+  CryptAPIReceivePayment();
   
   }, []);
 
@@ -337,7 +342,7 @@ const MakePaymentScreen = ({navigation, route}) => {
     </View>
 
     <View style={{marginHorizontal: wp(4), marginTop: wp(5)}}>
-        <Button disabled={(cryptapiData == '') ? true : false} title="Confirm Payment" onPress={() => navigation.navigate("PaymentSuccess", {cardName : "", quantity : "", currency : "", currencyImg: "", amount: ""})} />
+        <Button disabled={(cryptapiData == '') ? true : false} title="Confirm Payment" onPress={() => RequestGiftCardOrder()} />
     </View>
  
     

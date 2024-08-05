@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { BuyVirtualCardDetails, DashboardScreen, GiftCardCategoriesScreen, GiftCardsByCountry, LoadCountryCardScreen, PayGiftCardRequest, PaymentSuccessfulScreen, ViewTransactionDetails, 
+import { BuyVirtualCardDetails, DashboardScreen, GiftCardCategoriesScreen, GiftCardsByCountry, LoadCountryCardScreen, PayGiftCardRequest, PaymentSuccessfulScreen, RedeemCardScreen, ViewTransactionDetails, 
         } from '../screens';
 import TabNavigator from './TabNavigator';
 import { PurchaseVirtualCardScreen } from '../screens';
@@ -24,6 +24,7 @@ const AppStack = () => {
             <Stack.Screen name='GiftCardCountry' component={GiftCardsByCountry} options={{animation: 'slide_from_right'}} />
             <Stack.Screen name='LoadCountryCard' component={LoadCountryCardScreen} options={{animation: 'slide_from_right'}} />
             <Stack.Screen name='PayGiftCard' component={PayGiftCardRequest} options={{animation: 'slide_from_right'}} />
+            <Stack.Screen name='RedeemCard' component={RedeemCardScreen} options={{animation: 'slide_from_right'}} />
             <Stack.Screen name='CryptoPayment' component={CryptoPayment} options={{animation: 'slide_from_right'}} />
             <Stack.Screen name='BuyVirtualCard' component={BuyVirtualCardDetails} options={{animation: 'slide_from_right'}} />
             <Stack.Screen name='MakePayment' component={MakePaymentScreen} options={{animation: 'slide_from_bottom'}} />

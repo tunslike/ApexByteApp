@@ -25,6 +25,8 @@ const LoadCountryCardScreen = ({navigation, route}) => {
     const access_token = useSelector((state) => state.account.reloadlyAccessToken);
     const {isoName} = route.params;
 
+    console.log(access_token)
+
     const [countryList, setCountryList] = useState('');
     const [data, setData] = useState('');    
     const [loading, setIsLoading] = useState(false);
