@@ -1,5 +1,5 @@
 export const APIBaseUrl = {
-    developmentUrl: "http://localhost:3331/api/v1/",
+    developmentUrl: "https://services.apexbyte.tech/api/v1/",
     productionUrl: "http://localhost:3331/api/v1/",
 }
 

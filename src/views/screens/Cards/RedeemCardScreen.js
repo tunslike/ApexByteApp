@@ -22,6 +22,8 @@ import { useSelector } from 'react-redux';
 import moment from 'moment';
 import Modal from 'react-native-modal';
 import { useFocusEffect } from '@react-navigation/native';
+import Clipboard from '@react-native-clipboard/clipboard';
+import Toast from 'react-native-toast-message';
 
 
 const RedeemCardScreen = ({navigation, route}) => {
@@ -67,6 +69,40 @@ const RedeemCardScreen = ({navigation, route}) => {
       console.log(error + "1");
   });
 }
+
+const copyCardNumber = async (textCopy) => {
+
+  Clipboard.setString(textCopy);
+
+  Toast.show({
+    type: 'success',
+    text1: 'Card number copied!',
+  });
+  
+};
+
+const copyRedeemInstructure = async (textCopy) => {
+
+
+  Clipboard.setString(textCopy);
+
+  Toast.show({
+    type: 'success',
+    text1: 'Redeem instruction copied!',
+  });
+
+}
+
+const copyPinCode = async (textCopy) => {
+
+  Clipboard.setString(textCopy);
+
+  Toast.show({
+    type: 'success',
+    text1: 'Pin code copied!',
+  });
+  
+};
 
 
     //validate account number
@@ -262,7 +298,9 @@ const RedeemCardScreen = ({navigation, route}) => {
       <Text style={styles.txtWord}>{decodeURI(redeemInstructure)}</Text>     
     </ScrollView>
      
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => copyRedeemInstructure(decodeURI(redeemInstructure))}
+        >
             <Image source={icons.copyText} 
                 style={{
                     height: wp(4), width: wp(4), tintColor: COLORS.backBtnBG, resizeMode: 'contain'
@@ -325,7 +363,9 @@ const RedeemCardScreen = ({navigation, route}) => {
     <Text style={styles.txtWallet}>Card Number</Text>
     <View style={styles.walletBox}>
     <Text style={styles.txtid}>{cardNumber}</Text>
-    <TouchableOpacity>
+    <TouchableOpacity
+        onPress={() => copyCardNumber(cardNumber)}
+    >
     <Image source={icons.copyText} 
     style={{
       height: wp(5), width: wp(5), resizeMode: 'contain', tintColor: COLORS.orangeColor
@@ -337,7 +377,9 @@ const RedeemCardScreen = ({navigation, route}) => {
     <Text style={styles.txtWallet}>Pin Code</Text>
     <View style={styles.walletBox}>
     <Text style={styles.txtid}>{pinCode}</Text>
-    <TouchableOpacity>
+    <TouchableOpacity
+      onPress={() => copyPinCode(pinCode)}
+    >
       <Image source={icons.copyText} 
           style={{
             height: wp(5), width: wp(5), resizeMode: 'contain', tintColor: COLORS.orangeColor

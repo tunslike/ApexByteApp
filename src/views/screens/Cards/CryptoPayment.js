@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     columnGap: wp(3),
     alignItems: 'center',
-    marginTop: wp(3),
+    marginTop: (Platform.OS === 'android') ? wp(0.5) : wp(3),
     paddingRight: wp(4)
   },
   cardTitle: {
@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.tabBGColor,
     marginHorizontal: wp(3),
     borderRadius: wp(5),
-    paddingVertical: wp(3),
+    paddingVertical: (Platform.OS === 'android') ? wp(1.5) : wp(3),
     marginTop: wp(4),
     paddingLeft: wp(4)
   },
@@ -275,7 +275,7 @@ const styles = StyleSheet.create({
         fontFamily: FONTS.POPPINS_MEDIUM,
         fontSize: wp(3.5),
         color: COLORS.textGray,
-        marginBottom: wp(2)
+        marginBottom: (Platform.OS === 'android') ? wp(1) : wp(2)
     },
     listBox: {
         marginHorizontal: wp(5),

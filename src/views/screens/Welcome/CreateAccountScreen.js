@@ -11,12 +11,16 @@ import { COLORS, FONTS, icons, images, APIBaseUrl, AppName } from '../../../cons
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button, Loader } from '../../components';
 import { AuthContext } from '../../../context/AuthContext';
+import { useDispatch } from "react-redux";
 import Toast from 'react-native-toast-message';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import { useFocusEffect } from '@react-navigation/native';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 
 const CreateAccountScreen = ({navigation}) => {
+
+    const dispatch = useDispatch();
 
     const {ValidateAuthID} = useContext(AuthContext);
 
@@ -24,7 +28,7 @@ const CreateAccountScreen = ({navigation}) => {
     const [loading, setIsLoading] = useState(null);
     const [copiedText, setCopiedText] = useState('');
 
-    console.log(copiedText);
+    //console.log(`This is copied text: ${copiedText}`);
     
     //validate account number
     const createNewAuthID = () => {
@@ -92,7 +96,7 @@ const CreateAccountScreen = ({navigation}) => {
 
   }// end of function 
 
-    const  copyToClipboard = async () => {
+    const copyToClipboard = async () => {
 
       Clipboard.setString(authID);
 
@@ -146,7 +150,7 @@ const CreateAccountScreen = ({navigation}) => {
 
             <View style={styles.textBox}>
                     <Text style={styles.txtAuthID}>{authID}</Text>
-                    <TouchableOpacity onPress={() => null}>
+                    <TouchableOpacity onPress={() => copyToClipboard()}>
                         <Image source={icons.copyText} 
                             style={{
                                 height: wp(6), width: wp(6), 

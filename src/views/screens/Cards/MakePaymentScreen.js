@@ -21,6 +21,8 @@ import { useSelector } from 'react-redux';
 import uuid from 'react-native-uuid';
 import {Buffer} from 'buffer';
 import md5 from 'md5'; 
+import Clipboard from '@react-native-clipboard/clipboard';
+import Toast from 'react-native-toast-message';
 
 const MakePaymentScreen = ({navigation, route}) => {
 
@@ -228,6 +230,18 @@ const RequestGiftCardOrder = async () => {
   }, []);
 
 
+  const copyWalletAddress = async (textCopy) => {
+
+    Clipboard.setString(textCopy);
+
+    Toast.show({
+      type: 'success',
+      text1: 'Wallet address copied!',
+    });
+    
+  };
+
+
   return (
     <ScrollView
     style={{
@@ -295,7 +309,9 @@ const RequestGiftCardOrder = async () => {
         <Text style={styles.txtWallet}>Wallet Address</Text>
         <View style={styles.walletBox}>
             <Text style={styles.txtid}>{cryptapiData.address_in}</Text>
-            <TouchableOpacity>
+            <TouchableOpacity
+                onPress={() => copyWalletAddress(cryptapiData.address_in)}
+            >
                 <Image source={icons.copyText} 
                     style={{
                         height: wp(4), width: wp(4), tintColor: COLORS.backBtnBG, resizeMode: 'contain'
@@ -308,13 +324,6 @@ const RequestGiftCardOrder = async () => {
         <View style={styles.walletBox}>
             <Text style={styles.txtid}>Send {amount} USD to the wallet 
             address</Text>
-            <TouchableOpacity>
-                <Image source={icons.copyText} 
-                    style={{
-                        height: wp(4), width: wp(4), tintColor: COLORS.backBtnBG, resizeMode: 'contain'
-                    }}
-                />
-            </TouchableOpacity>
         </View>
 
        {(qrImage != '') &&

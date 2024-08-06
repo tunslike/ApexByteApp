@@ -5,7 +5,8 @@ import { StyleSheet,
          Image, 
          Keyboard,
         TouchableOpacity, 
-        Clipboard} from 'react-native'
+        Clipboard,
+        Platform} from 'react-native'
          import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import { FONTS, COLORS, icons, images } from '../../constants'
 
@@ -54,7 +55,7 @@ const styles = StyleSheet.create({
     },
     container: {
         backgroundColor: COLORS.tabBGColor,
-        padding: wp(2.8),
+        padding: (Platform.OS === 'android') ? wp(1.5) : wp(2.8),
         borderRadius: wp(5),
         flexDirection: 'row',
         justifyContent: 'space-between',
